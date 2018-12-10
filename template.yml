@@ -10,7 +10,6 @@ Parameters:
     ConstraintDescription: 'Required. Must be a SES verified email address.'
   TemplateName:
     Type: String
-    Default: ''
     Description: (Required) The Name of the Email Template you want to use.
     MinLength: 2
     MaxLength: 70
@@ -33,6 +32,14 @@ Resources:
           FROM_EMAIL: !Ref FromEmail
           CORS_ORIGIN: !Ref CorsOrigin
           TEMPLATE_NAME: !Ref TemplateName
+      Policies:
+        - SESCrudPolicy:
+            IdentityName: !Ref FromEmail
+        - Statement:
+          - Effect: Allow
+            Action:
+              - ses:SendTemplatedEmail
+            Resource: "*"
       Events:
         TemplatedEmailApi:
           Type: Api
